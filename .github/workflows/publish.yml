@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: write # push the release tag and create the GitHub Release
-  id-token: write # OIDC for npm trusted publishing; provenance is generated automatically
+  id-token: write # signs the npm provenance statement
 
 concurrency:
   group: publish-${{ github.ref }}
@@ -29,10 +29,6 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           cache: npm
 
-      # Trusted publishing needs npm CLI 11.5.1 or newer.
-      - name: Update npm
-        run: npm install -g npm@11
-
       # Dependency lifecycle scripts are an arbitrary-code-execution path during install.
       - name: Install dependencies
         run: npm ci --ignore-scripts
@@ -40,9 +36,9 @@ jobs:
       # Publishing a version that already exists is a hard error, so a commit that does not
       # bump the version skips the release instead of failing it.
       #
-      # A package that is not on npm at all cannot be released from here either: a trusted
-      # publisher is configured on an existing package, so the very first version is published
-      # by hand. Until then the commit is still verified, and nothing is published or tagged.
+      # A package that is not on npm at all is not released from here either: this workflow
+      # never creates a package, so the very first version is published by a maintainer, by
+      # hand. Until then the commit is still verified, and nothing is published or tagged.
       - name: Decide whether this version needs publishing
         id: check
         run: |
@@ -119,11 +115,12 @@ jobs:
         if: steps.check.outputs.verify == 'true'
         run: sh ./scripts/smoke-test.sh
 
-      # OIDC: the identity is GitHub's token, so there is no npm token in this workflow.
       # prepublishOnly re-runs `npm run verify` here as the last gate.
       - name: Publish
         if: steps.check.outputs.publish == 'true'
-        run: npm publish --access public
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
 
       - name: Tag the release
         if: steps.check.outputs.publish == 'true'
@@ -156,9 +153,8 @@ jobs:
                 echo "Not published: ${{ steps.check.outputs.name }} is not on npm yet."
                 echo ""
                 echo "This commit passed every check, but the first version must be published by hand:"
-                echo "run \`npm login\` and \`npm publish --access public\` from a clean checkout of master,"
-                echo "then add the trusted publisher on npmjs.com (repository \`${{ github.repository }}\`,"
-                echo "workflow \`publish.yml\`). Later versions are released by this workflow."
+                echo "run \`npm login\` and \`npm publish --access public\` from a clean checkout of master."
+                echo "Later versions are released by this workflow with the \`NPM_ACCESS_TOKEN\` secret."
               } >> "$GITHUB_STEP_SUMMARY"
               echo "::notice title=First release is manual::${{ steps.check.outputs.name }} is not on npm yet, so nothing was published. Publish $PACKAGE by hand once; later versions are released from here."
               ;;

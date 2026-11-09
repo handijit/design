@@ -1117,17 +1117,15 @@ and uses it from ESM, CommonJS, TypeScript and Sass.
 2. Run `npm version patch|minor|major`.
 3. Push to `master`.
 
-`publish.yml` then verifies the commit, publishes to npm through trusted
-publishing (OIDC, with provenance; no token is stored), tags `v<version>` and
-creates the GitHub Release from the CHANGELOG section. A push that does not
-change the version publishes nothing.
+`publish.yml` then verifies the commit, publishes to npm with provenance
+attached, tags `v<version>` and creates the GitHub Release from the CHANGELOG
+section. A push that does not change the version publishes nothing.
 
-The very first version is the exception: a trusted publisher can only be
-configured for a package that already exists, so while `@handijit/design` is not
-on npm the workflow verifies the commit, publishes nothing and says so in its
-summary. Publish that version once by hand with `npm publish --access public`,
-then add the trusted publisher on npmjs.com (organisation `handijit`, repository
-`design`, workflow `publish.yml`).
+The very first version is the exception: the workflow never creates a package,
+so while `@handijit/design` is not on npm it verifies the commit, publishes
+nothing and says so in its summary. A maintainer publishes that version once by
+hand with `npm publish --access public`; every later version is released by the
+workflow, which authenticates with the `NPM_ACCESS_TOKEN` repository secret.
 
 ## License
 
