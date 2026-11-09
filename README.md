@@ -1121,11 +1121,9 @@ and uses it from ESM, CommonJS, TypeScript and Sass.
 attached, tags `v<version>` and creates the GitHub Release from the CHANGELOG
 section. A push that does not change the version publishes nothing.
 
-The very first version is the exception: the workflow never creates a package,
-so while `@handijit/design` is not on npm it verifies the commit, publishes
-nothing and says so in its summary. A maintainer publishes that version once by
-hand with `npm publish --access public`; every later version is released by the
-workflow, which authenticates with the `NPM_ACCESS_TOKEN` repository secret.
+The workflow authenticates with the `NPM_ACCESS_TOKEN` secret of the `handijit`
+organization and checks it with `npm whoami` before it runs anything else. The
+first version is released the same way as every later one.
 
 ## License
 
