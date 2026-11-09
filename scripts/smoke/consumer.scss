@@ -1,0 +1,12 @@
+@use "pkg:@handijit/design/tokens.scss" as *;
+
+.card {
+  @include hd-type(body);
+  background: $hd-bg-surface;
+  border-radius: $hd-radius-md;
+  padding: $hd-space-4;
+
+  @include hd-up(md) {
+    padding: $hd-space-6;
+  }
+}
