@@ -1,0 +1,113 @@
+{
+  "name": "@handijit/design",
+  "version": "1.0.0",
+  "description": "Han Dijit's design tokens from a single TypeScript source: OKLCH colour scales and WCAG-gated light and dark themes as CSS custom properties, SCSS, JSON and typed constants, with self-hosted fonts, logos and a CSP-ready theme boot script.",
+  "author": "Ahmet ilhan <ahmetilhan.dev@gmail.com>",
+  "license": "MIT AND OFL-1.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/handijit/design.git"
+  },
+  "homepage": "https://github.com/handijit/design#readme",
+  "bugs": {
+    "url": "https://github.com/handijit/design/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./build/index.cjs",
+  "module": "./build/index.mjs",
+  "types": "./build/index.d.ts",
+  "unpkg": "./build/index.umd.js",
+  "jsdelivr": "./build/index.umd.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./build/index.d.mts",
+        "default": "./build/index.mjs"
+      },
+      "require": {
+        "types": "./build/index.d.ts",
+        "default": "./build/index.cjs"
+      },
+      "default": "./build/index.mjs"
+    },
+    "./tokens.css": {
+      "types": "./build/tokens.d.css.ts",
+      "default": "./build/tokens.css"
+    },
+    "./fonts.css": {
+      "types": "./build/fonts.d.css.ts",
+      "default": "./build/fonts.css"
+    },
+    "./tokens.scss": "./build/tokens.scss",
+    "./tokens.json": "./build/tokens.json",
+    "./fonts/*": "./build/fonts/*",
+    "./logos/*": "./build/logos/*",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "./build/tokens.css",
+    "./build/fonts.css"
+  ],
+  "files": [
+    "build",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "sh ./scripts/prod-build.sh",
+    "dev": "sh ./scripts/dev-build.sh",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
+    "test": "vitest run --coverage",
+    "size": "node ./scripts/report-size.mjs",
+    "lint:package": "publint && attw --pack .",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build && npm run size && npm run lint:package",
+    "prepublishOnly": "npm run verify"
+  },
+  "keywords": [
+    "design-tokens",
+    "design-system",
+    "css-variables",
+    "custom-properties",
+    "scss",
+    "dark-mode",
+    "theme",
+    "oklch",
+    "wcag",
+    "contrast",
+    "fonts",
+    "csp",
+    "handijit"
+  ],
+  "private": false,
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@eslint/js": "^10.0.1",
+    "@fontsource-variable/archivo": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@rollup/plugin-terser": "^1.0.2",
+    "@rollup/plugin-typescript": "^12.3.1",
+    "@types/node": "^26.6.6",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "@vitest/coverage-v8": "^5.1.0",
+    "eslint": "^10.14.0",
+    "eslint-config-prettier": "^10.1.8",
+    "jsdom": "^31.0.0",
+    "prettier": "^3.9.10",
+    "publint": "^0.3.25",
+    "rollup": "^4.68.2",
+    "rollup-plugin-dts": "^6.5.1",
+    "sass": "^1.108.1",
+    "tslib": "^2.9.1",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
+    "typescript-eslint": "^8.72.2",
+    "vitest": "^5.1.0"
+  }
+}

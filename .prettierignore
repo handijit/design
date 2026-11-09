@@ -1,0 +1,5 @@
+build/
+coverage/
+package-lock.json
+__tests__/__snapshots__/
+__tests__/fixtures/

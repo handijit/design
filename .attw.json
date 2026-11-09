@@ -1,0 +1,8 @@
+{
+  "excludeEntrypoints": [
+    "./tokens.css",
+    "./fonts.css",
+    "./tokens.scss",
+    "./tokens.json"
+  ]
+}
