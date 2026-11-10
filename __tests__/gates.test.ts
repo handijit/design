@@ -20,6 +20,13 @@ const DISTINCT = 10;
 
 const THEME_NAMES: ThemeName[] = ["light", "dark"];
 const SURFACES: ColorToken[] = ["bg-page", "bg-surface", "bg-raised"];
+// Every ground a form control is drawn on, the disabled fill included.
+const CONTROL_GROUNDS: ColorToken[] = [
+  ...SURFACES,
+  "bg-inset",
+  "bg-overlay",
+  "bg-disabled",
+];
 const STATUSES: StatusName[] = ["success", "warning", "danger", "info"];
 const CHARTS: ColorToken[] = [
   "chart-1",
@@ -88,6 +95,8 @@ const addedPairs = (): Pair[] => [
     surface,
     DISABLED,
   ]),
+  // WCAG 1.4.11: the boundary is what identifies a field, a checkbox, an off switch.
+  ...CONTROL_GROUNDS.map((ground): Pair => ["border-control", ground, GRAPHIC]),
 ];
 
 const failures = (theme: ThemeName, pairs: Pair[]): string[] =>
@@ -134,6 +143,23 @@ describe.each(THEME_NAMES)("accessibility gates: %s theme", (theme) => {
       expect(
         contrast(themes[theme]["text-disabled"], themes[theme][surface])
       ).toBeLessThan(contrast(themes[theme]["text-3"], themes[theme][surface]));
+    }
+  });
+
+  test("should keep the control boundary calm: seen, never as loud as text", () => {
+    for (const ground of CONTROL_GROUNDS) {
+      const boundary = contrast(
+        themes[theme]["border-control"],
+        themes[theme][ground]
+      );
+
+      expect(boundary, ground).toBeLessThan(TEXT);
+      expect(boundary, ground).toBeLessThan(
+        contrast(themes[theme]["text-3"], themes[theme][ground])
+      );
+      expect(boundary, ground).toBeGreaterThan(
+        contrast(themes[theme]["border-strong"], themes[theme][ground])
+      );
     }
   });
 

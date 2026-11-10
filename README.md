@@ -15,11 +15,11 @@ script that works under a strict Content Security Policy.
 - **One source, five outputs.** `tokens.css`, `tokens.scss`, `tokens.json`,
   `fonts.css` and the logo SVGs are generated from the TypeScript tokens at
   build time; the build fails if they disagree with the JavaScript entry.
-- **261 tokens, 0 runtime dependencies.** 191 theme-independent custom
-  properties and 70 per theme (64 colours, 6 effects), all prefixed `--hd-`.
+- **262 tokens, 0 runtime dependencies.** 191 theme-independent custom
+  properties and 71 per theme (65 colours, 6 effects), all prefixed `--hd-`.
 - **Light and dark, gated.** Both themes pass the same contrast gates in the
-  test suite: text at 4.5:1 or better (primary text 7:1), focus rings and chart
-  colours at 3:1, chart colours at least 10 ΔE apart
+  test suite: text at 4.5:1 or better (primary text 7:1), focus rings, control
+  boundaries and chart colours at 3:1, chart colours at least 10 ΔE apart
   ([Semantics](#semantics)).
 - **Theme islands.** `data-theme` works on the root element and on any
   container, nested in either direction; with no attribute the page follows the
@@ -224,7 +224,7 @@ already computed above it. Give an island its own paint:
 
 ### Colour tokens
 
-64 per theme. Every value is a six-digit hex colour. In TypeScript the names are
+65 per theme. Every value is a six-digit hex colour. In TypeScript the names are
 the `ColorToken` union and the values are `themes.light` and `themes.dark`.
 
 | Custom property           | Light     | Dark      | Use                                                       |
@@ -236,7 +236,8 @@ the `ColorToken` union and the values are `themes.light` and `themes.dark`.
 | `--hd-bg-overlay`         | `#ffffff` | `#202a3e` | Menus, popovers, dialogs                                  |
 | `--hd-bg-disabled`        | `#ecf0f6` | `#172032` | Fill of a disabled control                                |
 | `--hd-border`             | `#dee3ed` | `#283145` | Default hairline                                          |
-| `--hd-border-strong`      | `#cbd1de` | `#414d64` | Input outlines and dividers that must be seen             |
+| `--hd-border-strong`      | `#cbd1de` | `#414d64` | Dividers that must be seen, outlines of neutral buttons   |
+| `--hd-border-control`     | `#80899b` | `#69758d` | Boundary of a form control; 3:1 on every background       |
 | `--hd-text`               | `#091122` | `#f1f3f9` | Primary text                                              |
 | `--hd-text-2`             | `#515b6e` | `#bac1d0` | Secondary text                                            |
 | `--hd-text-3`             | `#677083` | `#8f99ab` | Tertiary text and placeholders                            |
@@ -429,7 +430,7 @@ read `exports` by itself, use the package importer:
 
 | Member                                   | Kind     | What it gives                                                                                  |
 | ---------------------------------------- | -------- | ---------------------------------------------------------------------------------------------- |
-| `$hd-<token>`                            | variable | `var(--hd-<token>)` for each of the 261 tokens: `$hd-text`, `$hd-cobalt-600`, `$hd-space-4`    |
+| `$hd-<token>`                            | variable | `var(--hd-<token>)` for each of the 262 tokens: `$hd-text`, `$hd-cobalt-600`, `$hd-space-4`    |
 | `$hd-tokens`                             | map      | Token name to `var()` reference                                                                |
 | `$hd-breakpoint-sm`, `-md`, `-lg`, `-xl` | variable | `640px`, `768px`, `1024px`, `1280px`: real lengths, usable in a media query                    |
 | `$hd-breakpoints`                        | map      | Breakpoint name to length                                                                      |
@@ -938,6 +939,7 @@ stylesheet finds the fonts by relative URL.
 | `band-text-2` on `band-bg`, `band-deep`                                                                          | 4.5:1                   |
 | `focus`, `chart-1` to `chart-6`, `<status>-solid` on `bg-page`, `bg-surface`, `bg-raised`                        | 3:1                     |
 | `focus`, `band-line-strong` on `band-bg`, `band-deep`                                                            | 3:1                     |
+| `border-control` on `bg-page`, `bg-surface`, `bg-raised`, `bg-inset`, `bg-overlay`, `bg-disabled`                | 3:1, and below `text-3` |
 | `border-strong` on `bg-page`, `bg-surface`, `bg-raised`                                                          | 1.25:1                  |
 | `text-disabled` on `bg-page`, `bg-surface`, `bg-raised`, `bg-disabled`                                           | 2:1, and below `text-3` |
 | Any two chart colours                                                                                            | 10 ΔE                   |
@@ -950,7 +952,8 @@ Not guaranteed, by design:
   does not qualify as text or as the only indicator of a state; use
   `highlight-text` for text.
 - `border` is a hairline between surfaces, not a WCAG-rated indicator. Use
-  `border-strong` where an outline carries meaning.
+  `border-control` where an outline is what identifies a control. `border-strong`
+  is a stronger hairline, 1.3:1 to 2.4:1, and is not rated either.
 - No theme colour is pure black (`#000000`); the dark theme is a night navy.
   Shadows in the dark theme are black, with alpha.
 
@@ -1026,7 +1029,7 @@ token maps you do not import. CI fails when the minified browser bundle exceeds
 ## TypeScript
 
 - Token names are unions, so a typo is a compile error: `TokenName` is every
-  token, `ColorToken` the 64 theme colours, `EffectToken` the 6 effects,
+  token, `ColorToken` the 65 theme colours, `EffectToken` the 6 effects,
   `ThemedToken` both, `ScaleToken` the 101 scale steps and `StaticToken` every
   theme-independent token.
 - `Theme` is `Readonly<Record<ColorToken, string>>`: a theme cannot miss a token,

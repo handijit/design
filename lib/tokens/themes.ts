@@ -27,6 +27,8 @@ const night = {
   overlay: neutral(0.285, 0.04),
   border: neutral(0.315, 0.038),
   borderStrong: neutral(0.42, 0.042),
+  // Bound by the overlay, the lightest ground a control sits on: 3.1:1 there.
+  borderControl: neutral(0.56, 0.04),
   text: neutral(0.965, 0.008),
   textTwo: neutral(0.81, 0.022),
   textThree: neutral(0.68, 0.03),
@@ -60,6 +62,13 @@ const accent = {
   "on-accent": slate[950],
 } as const;
 
+/**
+ * Light-theme boundary of interactive controls. It sits between slate 400 and 500 because
+ * no step of the scale lands in the band: 400 is 2.4:1 on a surface, 500 is 5:1. Bound by
+ * the inset ground, the darkest one a control sits on: 3.08:1 there.
+ */
+const lightBorderControl = neutral(0.63, 0.029);
+
 const light: Theme = {
   "bg-page": slate[25],
   "bg-surface": slate[0],
@@ -69,6 +78,7 @@ const light: Theme = {
   "bg-disabled": slate[100],
   border: slate[200],
   "border-strong": slate[300],
+  "border-control": lightBorderControl,
   text: slate[950],
   "text-2": slate[600],
   "text-3": slate[500],
@@ -128,6 +138,7 @@ const dark: Theme = {
   "bg-disabled": night.raised,
   border: night.border,
   "border-strong": night.borderStrong,
+  "border-control": night.borderControl,
   text: night.text,
   "text-2": night.textTwo,
   "text-3": night.textThree,

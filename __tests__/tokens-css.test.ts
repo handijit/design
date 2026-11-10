@@ -152,7 +152,7 @@ describe("tokens.css", () => {
       ([, property]) => property as string
     );
 
-    expect(properties).toHaveLength(191 + 3 * 70 + 3);
+    expect(properties).toHaveLength(191 + 3 * 71 + 3);
     expect(properties.every((property) => property.startsWith("--hd-"))).toBe(
       true
     );

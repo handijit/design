@@ -54,6 +54,7 @@ type ColorToken =
   | "bg-disabled"
   | "border"
   | "border-strong"
+  | "border-control"
   | "text"
   | "text-2"
   | "text-3"

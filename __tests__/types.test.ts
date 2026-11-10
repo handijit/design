@@ -54,6 +54,7 @@ describe("type surface", () => {
     expectTypeOf<"cobalt-600">().toExtend<ScaleToken>();
     expectTypeOf<"slate-25">().toExtend<TokenName>();
     expectTypeOf<"chart-6">().toExtend<ColorToken>();
+    expectTypeOf<"border-control">().toExtend<ColorToken>();
     expectTypeOf<"info-on-solid">().toExtend<ColorToken>();
     expectTypeOf<"shadow-2">().toExtend<TokenName>();
     expectTypeOf<"type-h1-line-height">().toExtend<TokenName>();
