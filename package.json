@@ -1,6 +1,6 @@
 {
   "name": "@handijit/design",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Han Dijit's design tokens from a single TypeScript source: OKLCH colour scales and WCAG-gated light and dark themes as CSS custom properties, SCSS, JSON and typed constants, with self-hosted fonts, logos and a CSP-ready theme boot script.",
   "author": "Ahmet ilhan <ahmetilhan.dev@gmail.com>",
   "license": "MIT AND OFL-1.1",

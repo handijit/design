@@ -7,6 +7,31 @@ and the package follows [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-10
+
+Two additions; no existing token, value, export or file changes.
+
+### Added
+
+- `border-control` (`--hd-border-control`, `$hd-border-control`,
+  `themes.*["border-control"]`): the boundary of an interactive control, such as
+  a text field, a checkbox or the track of a switch that is off. `#80899b` in
+  the light theme and `#69758d` in the dark theme, neutrals of the slate family.
+  It is at least 3:1 (WCAG 1.4.11) against every background a control sits on,
+  `bg-page`, `bg-surface`, `bg-raised`, `bg-inset`, `bg-overlay` and
+  `bg-disabled`, in both themes, and stays below `text-3`; the test suite gates
+  both. `border` and `border-strong` keep their values and remain the hairlines
+  for separators, cards and tables: they are 1.1:1 to 2.4:1 and were never
+  enough to identify a control on their own.
+- `effectValues`: the shadows and the scrim of each theme as hex colours and
+  numbers (`effectValues.dark.scrim` is `{ color: "#040813", alpha: 0.64 }`),
+  for consumers that cannot read a custom property, such as an Electron main
+  process, an Open Graph image or a PDF. Until now these existed only as the
+  CSS strings of `effects`. `effectValues` is the single source: `effects`,
+  `tokens.css` and `tokens.scss` are rendered from it. Also in `tokens.json`
+  under the same name, with the types `EffectValues`, `ThemeEffectValues`,
+  `EffectTone` and `ShadowLayer`.
+
 ## [1.0.0] - 2026-11-10
 
 First release: the design tokens of Han Dijit for the site, the panel and the
@@ -46,5 +71,6 @@ desktop apps, generated from one TypeScript source.
   `logos`; the body is painted with `currentColor` and the dot with
   `--hd-logo-dot`, falling back to `--hd-accent`.
 
-[Unreleased]: https://github.com/handijit/design/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/handijit/design/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/handijit/design/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/handijit/design/releases/tag/v1.0.0
