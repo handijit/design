@@ -1121,9 +1121,8 @@ and uses it from ESM, CommonJS, TypeScript and Sass.
 attached, tags `v<version>` and creates the GitHub Release from the CHANGELOG
 section. A push that does not change the version publishes nothing.
 
-The workflow authenticates with the `NPM_ACCESS_TOKEN` secret of the `handijit`
-organization and checks it with `npm whoami` before it runs anything else. The
-first version is released the same way as every later one.
+The workflow authenticates with the `NPM_ACCESS_TOKEN` secret of this repository
+and checks it with `npm whoami` before it runs anything else.
 
 ## License
 
