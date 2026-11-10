@@ -36,9 +36,9 @@ jobs:
       # Publishing a version that already exists is a hard error, so a commit that does not
       # bump the version skips the release instead of failing it.
       #
-      # A package that is not on npm yet is released from here as well: the organization's
-      # token can create it, so the first version gets provenance, its tag and its GitHub
-      # Release like every later one.
+      # A package that is not on npm yet is released from here as well: the token can create
+      # it, so the first version gets provenance, its tag and its GitHub Release like every
+      # later one.
       - name: Decide whether this version needs publishing
         id: check
         run: |
