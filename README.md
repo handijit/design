@@ -26,14 +26,14 @@ script that works under a strict Content Security Policy.
   system.
 - **CSP-ready theme boot script.** A 283-byte inline script and its `sha256-…`
   digest, computed at build time, for a `script-src` without `unsafe-inline`.
-- **3.05 kB gzip** for `tokens.css`; **5.16 kB gzip** for the whole minified
+- **3.07 kB gzip** for `tokens.css`; **5.32 kB gzip** for the whole minified
   browser bundle ([Bundle size](#bundle-size)).
 - **Self-hosted fonts.** Archivo (variable weight and width), Inter (variable
   weight) and IBM Plex Mono (400, 500) as 8 `woff2` files, 366 kB in total,
   split by `unicode-range` so a page downloads only the subsets it uses.
 - **ESM, CommonJS and a `<script>` build**, each with type declarations. The
   JavaScript entry has no import side effects.
-- **199 tests, 100% coverage** of statements, branches, functions and
+- **219 tests, 100% coverage** of statements, branches, functions and
   lines, enforced in CI.
 
 ---
@@ -315,6 +315,9 @@ they are correct inside a theme island as well.
 `--hd-shadow-color` and `--hd-shadow-alpha` are the parts, for a shadow the three
 levels do not cover: `box-shadow: 0 8px 24px rgb(var(--hd-shadow-color) / var(--hd-shadow-alpha))`.
 
+Outside CSS, read the same values as hex and numbers from
+[`effectValues`](#effect-values).
+
 ### Colour scales
 
 101 custom properties, `--hd-<scale>-<step>`, identical in both themes. Eight
@@ -458,9 +461,10 @@ tokens.themes.dark["bg-page"]; // "#080e1b"
 
 For places with no CSS and no bundler, such as an Electron main process or a
 build script in another language. The keys are `prefix`, `themeAttribute`,
-`themeStorageKey`, `hues`, `scales`, `themes`, `effects`, `fonts`, `fontWeights`,
-`typography`, `spacing`, `radii`, `motion`, `layers` and `breakpoints`, with the
-same values as the exports of the same name in the JavaScript entry.
+`themeStorageKey`, `hues`, `scales`, `themes`, `effects`, `effectValues`, `fonts`,
+`fontWeights`, `typography`, `spacing`, `radii`, `motion`, `layers` and
+`breakpoints`, with the same values as the exports of the same name in the
+JavaScript entry.
 
 ### TypeScript API
 
@@ -470,6 +474,7 @@ import {
   scales,
   themes,
   effects,
+  effectValues,
   hues,
   fonts,
   fontWeights,
@@ -500,25 +505,58 @@ import {
 
 #### Token maps
 
-| Export        | Type                                | Example                                      |
-| ------------- | ----------------------------------- | -------------------------------------------- |
-| `scales`      | `Scales`                            | `scales.cobalt[600]` is `"#2661fa"`          |
-| `themes`      | `Themes`                            | `themes.dark.text` is `"#f1f3f9"`            |
-| `effects`     | `Effects`                           | `effects.light["shadow-1"]`                  |
-| `hues`        | `Readonly<Record<HueName, number>>` | `hues.coral` is `33`                         |
-| `fonts`       | `Fonts`                             | `fonts.mono` is the IBM Plex Mono stack      |
-| `fontWeights` | `FontWeights`                       | `fontWeights.semibold` is `600`              |
-| `typography`  | `Typography`                        | `typography.body.size` is `15`               |
-| `spacing`     | `Spacing`                           | `spacing[6]` is `24`                         |
-| `radii`       | `Radii`                             | `radii.pill` is `999`                        |
-| `motion`      | `Motion`                            | `motion.duration.fast` is `120`              |
-| `layers`      | `Layers`                            | `layers.toast` is `1400`                     |
-| `breakpoints` | `Breakpoints`                       | `breakpoints.lg` is `1024`                   |
-| `logos`       | `Logos`                             | `logos.mark.viewBox` is `"0 0 618.034 1000"` |
+| Export         | Type                                | Example                                                          |
+| -------------- | ----------------------------------- | ---------------------------------------------------------------- |
+| `scales`       | `Scales`                            | `scales.cobalt[600]` is `"#2661fa"`                              |
+| `themes`       | `Themes`                            | `themes.dark.text` is `"#f1f3f9"`                                |
+| `effects`      | `Effects`                           | `effects.light["shadow-1"]`                                      |
+| `effectValues` | `EffectValues`                      | `effectValues.dark.scrim` is `{ color: "#040813", alpha: 0.64 }` |
+| `hues`         | `Readonly<Record<HueName, number>>` | `hues.coral` is `33`                                             |
+| `fonts`        | `Fonts`                             | `fonts.mono` is the IBM Plex Mono stack                          |
+| `fontWeights`  | `FontWeights`                       | `fontWeights.semibold` is `600`                                  |
+| `typography`   | `Typography`                        | `typography.body.size` is `15`                                   |
+| `spacing`      | `Spacing`                           | `spacing[6]` is `24`                                             |
+| `radii`        | `Radii`                             | `radii.pill` is `999`                                            |
+| `motion`       | `Motion`                            | `motion.duration.fast` is `120`                                  |
+| `layers`       | `Layers`                            | `layers.toast` is `1400`                                         |
+| `breakpoints`  | `Breakpoints`                       | `breakpoints.lg` is `1024`                                       |
+| `logos`        | `Logos`                             | `logos.mark.viewBox` is `"0 0 618.034 1000"`                     |
 
 Lengths are numbers of CSS pixels and durations are numbers of milliseconds; the
 CSS output adds the units. The maps are typed `Readonly` and are plain objects:
 they are literals in the bundle, not computed when the module loads.
+
+#### Effect values
+
+`effects` holds CSS strings (`"rgb(9 17 34 / 0.48)"`), which only a CSS engine
+can use. `effectValues` holds the same shadows and scrim as hex colours and
+numbers, for an Electron main process, an Open Graph image or a PDF. It is the
+source the strings in `effects` and the custom properties in `tokens.css` are
+rendered from, and the test suite re-renders them to prove it, so the two cannot
+drift apart.
+
+```ts
+import { effectValues } from "@handijit/design";
+
+const { shadow, shadows, scrim } = effectValues.light;
+
+shadow; // { color: "#0f173c", alpha: 0.1 }: --hd-shadow-color and --hd-shadow-alpha
+scrim; // { color: "#091122", alpha: 0.48 }: --hd-scrim
+shadows[2];
+// [
+//   { x: 0, y: 1, blur: 2, spread: 0, alpha: 0.1 },
+//   { x: 0, y: 12, blur: 32, spread: -12, alpha: 0.2 },
+// ]: the layers of --hd-shadow-2, each painted in shadow.color
+```
+
+| Field     | Type                                                    | Description                                             |
+| --------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| `shadow`  | `EffectTone`                                            | Shadow colour (`#rrggbb`) and base opacity of the theme |
+| `shadows` | `Readonly<Record<ShadowLevel, readonly ShadowLayer[]>>` | Layers of the three elevation shadows, in CSS order     |
+| `scrim`   | `EffectTone`                                            | Backdrop colour (`#rrggbb`) and opacity behind a dialog |
+
+A `ShadowLayer` is `{ x, y, blur, spread, alpha }`: lengths in CSS pixels, opacity
+from 0 to 1. Every colour is opaque; the opacity is always the separate `alpha`.
 
 #### `cssVar(name, fallback?)`
 
@@ -891,13 +929,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 ```ts
 // main process
 import { BrowserWindow, nativeTheme } from "electron";
-import { themes } from "@handijit/design";
+import { effectValues, themes } from "@handijit/design";
+
+const theme = nativeTheme.shouldUseDarkColors ? "dark" : "light";
 
 const window = new BrowserWindow({
   // The colour the window shows before the renderer paints.
-  backgroundColor:
-    themes[nativeTheme.shouldUseDarkColors ? "dark" : "light"]["bg-page"],
+  backgroundColor: themes[theme]["bg-page"],
 });
+
+// The scrim of a native sheet, where no custom property can be read.
+const { color, alpha } = effectValues[theme].scrim; // "#091122", 0.48
 ```
 
 In the renderer, load `tokens.css` and `fonts.css` through the bundler like any
@@ -988,17 +1030,17 @@ do a fixed amount of arithmetic per call (`maxChroma` and an out-of-gamut
 
 ## Bundle size
 
-Measured by `npm run size` on the 1.0.0 build:
+Measured by `npm run size` on the 1.1.0 build:
 
 | File                         | Raw      | Gzip    | Brotli  |
 | ---------------------------- | -------- | ------- | ------- |
-| `build/index.mjs`            | 22.39 kB | 7.59 kB | 6.28 kB |
-| `build/index.cjs`            | 22.86 kB | 7.66 kB | 6.34 kB |
-| `build/index.umd.js`         | 13.05 kB | 5.16 kB | 4.30 kB |
-| `build/index.d.ts`           | 11.11 kB | 4.12 kB | 3.49 kB |
-| `build/tokens.css`           | 13.35 kB | 3.05 kB | 2.38 kB |
-| `build/tokens.scss`          | 23.89 kB | 4.01 kB | 2.69 kB |
-| `build/tokens.json`          | 10.53 kB | 2.42 kB | 1.96 kB |
+| `build/index.mjs`            | 24.23 kB | 7.81 kB | 6.47 kB |
+| `build/index.cjs`            | 24.72 kB | 7.88 kB | 6.53 kB |
+| `build/index.umd.js`         | 13.68 kB | 5.32 kB | 4.44 kB |
+| `build/index.d.ts`           | 12.81 kB | 4.59 kB | 3.90 kB |
+| `build/tokens.css`           | 13.45 kB | 3.07 kB | 2.43 kB |
+| `build/tokens.scss`          | 23.99 kB | 4.03 kB | 2.68 kB |
+| `build/tokens.json`          | 12.57 kB | 2.63 kB | 2.15 kB |
 | `build/fonts.css`            | 3.13 kB  | 0.52 kB | 0.43 kB |
 | `build/logos/mark.svg`       | 0.60 kB  | 0.31 kB | 0.27 kB |
 | `build/logos/horizontal.svg` | 2.83 kB  | 1.04 kB | 0.88 kB |
@@ -1036,6 +1078,7 @@ token maps you do not import. CI fails when the minified browser bundle exceeds
   and neither can an object you declare as `Theme`.
 - The remaining exported types name the keys and shapes of the maps:
   `ThemeName`, `ThemePreference`, `Themes`, `ThemeEffects`, `Effects`,
+  `EffectValues`, `ThemeEffectValues`, `EffectTone`, `ShadowLayer`,
   `ShadowLevel`, `Scales`, `ScaleName`, `ChromaticScaleName`, `ChromaticScale`,
   `ChromaticStep`, `NeutralScale`, `NeutralStep`, `HueName`, `StatusName`,
   `ChartIndex`, `Oklch`, `FontRole`, `Fonts`, `FontWeightName`, `FontWeights`,
@@ -1085,7 +1128,8 @@ The value is in `rem` (`0.9375rem`), so it still follows the reader's setting.
 
 ## Breaking changes
 
-1.0.0 is the first release; there is nothing to migrate from.
+None since 1.0.0. 1.1.0 only adds: the `border-control` colour and the
+`effectValues` export ([CHANGELOG](./CHANGELOG.md)).
 
 The contract of the package is the name of every token, custom property, SCSS
 member, export and file path, the theme selectors, and the value of every token.
@@ -1100,7 +1144,7 @@ npm install
 npm run verify
 ```
 
-`verify` runs ESLint, both type checks, the 199 tests with the 100%
+`verify` runs ESLint, both type checks, the 219 tests with the 100%
 coverage threshold, the build (which checks the generated files against the
 JavaScript entry), the size budgets, `publint` and `attw`.
 `sh ./scripts/smoke-test.sh` installs the packed tarball into an empty project

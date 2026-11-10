@@ -1,5 +1,6 @@
 import breakpoints from "../tokens/breakpoints";
 import CSS_VARIABLE_PREFIX from "../tokens/css-variable-prefix";
+import effectValues from "../tokens/effect-values";
 import effects from "../tokens/effects";
 import fontWeights from "../tokens/font-weights";
 import fonts from "../tokens/fonts";
@@ -28,6 +29,7 @@ const renderTokensJson = (): string =>
       scales,
       themes,
       effects,
+      effectValues,
       fonts,
       fontWeights,
       typography,

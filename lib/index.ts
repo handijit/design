@@ -8,6 +8,7 @@ import maxChroma from "./modules/max-chroma";
 import oklchToHex from "./modules/oklch-to-hex";
 import breakpoints from "./tokens/breakpoints";
 import CSS_VARIABLE_PREFIX from "./tokens/css-variable-prefix";
+import effectValues from "./tokens/effect-values";
 import effects from "./tokens/effects";
 import fontWeights from "./tokens/font-weights";
 import fonts from "./tokens/fonts";
@@ -35,6 +36,8 @@ import type {
   DurationName,
   EasingName,
   EffectToken,
+  EffectTone,
+  EffectValues,
   Effects,
   FontRole,
   FontWeightName,
@@ -55,12 +58,14 @@ import type {
   ScaleName,
   ScaleToken,
   Scales,
+  ShadowLayer,
   ShadowLevel,
   SpaceStep,
   Spacing,
   StaticToken,
   StatusName,
   Theme,
+  ThemeEffectValues,
   ThemeEffects,
   ThemeName,
   ThemePreference,
@@ -81,6 +86,7 @@ export {
   cssVarName,
   deltaE,
   effects,
+  effectValues,
   fonts,
   fontWeights,
   hexToOklch,
@@ -111,6 +117,8 @@ export type {
   DurationName,
   EasingName,
   EffectToken,
+  EffectTone,
+  EffectValues,
   Effects,
   FontRole,
   FontWeightName,
@@ -131,12 +139,14 @@ export type {
   ScaleName,
   ScaleToken,
   Scales,
+  ShadowLayer,
   ShadowLevel,
   SpaceStep,
   Spacing,
   StaticToken,
   StatusName,
   Theme,
+  ThemeEffectValues,
   ThemeEffects,
   ThemeName,
   ThemePreference,

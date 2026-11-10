@@ -91,6 +91,17 @@ for (const theme of ["light", "dark"]) {
       `build/tokens.css: expected "${declaration}" in the ${theme} theme`
     );
   }
+
+  // The CSS strings and the plain values of the effects are one source in two shapes.
+  const { shadow, scrim } = esm.effectValues[theme];
+  const channels = (hex) =>
+    [1, 3, 5].map((at) => parseInt(hex.slice(at, at + 2), 16)).join(" ");
+  check(
+    esm.effects[theme]["shadow-color"] === channels(shadow.color) &&
+      esm.effects[theme].scrim ===
+        `rgb(${channels(scrim.color)} / ${scrim.alpha})`,
+    `build/index.mjs: effectValues.${theme} differs from effects.${theme}`
+  );
 }
 for (const [scale, steps] of Object.entries(esm.scales)) {
   for (const [step, hex] of Object.entries(steps)) {

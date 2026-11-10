@@ -3,9 +3,11 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 import type {
   BreakpointName,
   ColorToken,
+  EffectValues,
   Logo,
   Oklch,
   ScaleToken,
+  ShadowLayer,
   Theme,
   ThemeName,
   ThemePreference,
@@ -19,6 +21,7 @@ import {
   cssVarName,
   deltaE,
   effects,
+  effectValues,
   hexToOklch,
   logos,
   maxChroma,
@@ -80,6 +83,18 @@ describe("type surface", () => {
 
     // @ts-expect-error "sepia" is not a theme
     expect(themes.sepia).toBe(undefined);
+  });
+
+  test("should type the effect values as hex and numbers", () => {
+    expectTypeOf(effectValues).toEqualTypeOf<EffectValues>();
+    expectTypeOf(effectValues.dark.scrim.color).toEqualTypeOf<string>();
+    expectTypeOf(effectValues.dark.scrim.alpha).toEqualTypeOf<number>();
+    expectTypeOf(effectValues.light.shadows[2]).toEqualTypeOf<
+      readonly ShadowLayer[]
+    >();
+
+    // @ts-expect-error there are three elevation levels
+    expect(effectValues.light.shadows[4]).toBe(undefined);
   });
 
   test("should index the scales by family and step", () => {

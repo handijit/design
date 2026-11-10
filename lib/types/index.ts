@@ -158,6 +158,40 @@ type EffectToken = keyof ThemeEffects;
 
 type Effects = Readonly<Record<ThemeName, ThemeEffects>>;
 
+/** A colour with its opacity: what `rgb(r g b / a)` says in CSS, as plain values. */
+type EffectTone = {
+  /** The colour as an opaque `#rrggbb`. */
+  readonly color: string;
+  /** Opacity, 0 (transparent) to 1 (solid). */
+  readonly alpha: number;
+};
+
+/** One layer of an elevation shadow; lengths are CSS pixels. */
+type ShadowLayer = {
+  /** Horizontal offset. */
+  readonly x: number;
+  /** Vertical offset. */
+  readonly y: number;
+  /** Blur radius. */
+  readonly blur: number;
+  /** Spread radius; negative pulls the shadow in under its box. */
+  readonly spread: number;
+  /** Opacity of this layer, painted in the theme's shadow colour. */
+  readonly alpha: number;
+};
+
+/** The effects of one theme as numbers and hex, for anything that cannot read CSS. */
+type ThemeEffectValues = {
+  /** Shadow colour and base shadow opacity of the theme. */
+  readonly shadow: EffectTone;
+  /** The layers of each elevation shadow, outermost paint first as in CSS. */
+  readonly shadows: Readonly<Record<ShadowLevel, readonly ShadowLayer[]>>;
+  /** Translucent backdrop behind dialogs. */
+  readonly scrim: EffectTone;
+};
+
+type EffectValues = Readonly<Record<ThemeName, ThemeEffectValues>>;
+
 type DurationName = "fast" | "base" | "slow";
 
 type EasingName = "standard" | "enter" | "exit";
@@ -238,6 +272,8 @@ export type {
   DurationName,
   EasingName,
   EffectToken,
+  EffectTone,
+  EffectValues,
   Effects,
   FontRole,
   FontWeightName,
@@ -258,12 +294,14 @@ export type {
   ScaleName,
   ScaleToken,
   Scales,
+  ShadowLayer,
   ShadowLevel,
   SpaceStep,
   Spacing,
   StaticToken,
   StatusName,
   Theme,
+  ThemeEffectValues,
   ThemeEffects,
   ThemeName,
   ThemePreference,

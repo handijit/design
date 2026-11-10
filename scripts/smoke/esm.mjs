@@ -14,6 +14,10 @@ if (design.cssVar("bg-page") !== "var(--hd-bg-page)") fail("cssVar");
 if (design.contrast("#ffffff", "#000000") !== 21) fail("contrast");
 if (design.themes.light.primary !== design.scales.cobalt[600]) fail("themes");
 if (!isDeepStrictEqual(tokens.themes, design.themes)) fail("tokens.json");
+if (!isDeepStrictEqual(tokens.effectValues, design.effectValues))
+  fail("tokens.json effectValues");
+if (design.effectValues.light.scrim.color !== design.themes.light.text)
+  fail("effectValues");
 
 const digest = createHash("sha256")
   .update(design.THEME_BOOT_SCRIPT, "utf8")

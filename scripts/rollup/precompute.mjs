@@ -10,6 +10,7 @@ const PRECOMPUTED = {
   "lib/tokens/scales.ts": (api) => api.scales,
   "lib/tokens/themes.ts": (api) => api.themes,
   "lib/tokens/effects.ts": (api) => api.effects,
+  "lib/tokens/effect-values.ts": (api) => api.effectValues,
   "lib/tokens/theme-boot-script.ts": (api) => api.THEME_BOOT_SCRIPT,
   "lib/tokens/theme-boot-script-hash.ts": (api) => api.THEME_BOOT_SCRIPT_HASH,
 };

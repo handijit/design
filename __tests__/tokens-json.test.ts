@@ -16,6 +16,7 @@ describe("tokens.json", () => {
       "scales",
       "themes",
       "effects",
+      "effectValues",
       "fonts",
       "fontWeights",
       "typography",
@@ -36,6 +37,7 @@ describe("tokens.json", () => {
       scales: api.scales,
       themes: api.themes,
       effects: api.effects,
+      effectValues: api.effectValues,
       fonts: api.fonts,
       fontWeights: api.fontWeights,
       typography: api.typography,
@@ -52,6 +54,17 @@ describe("tokens.json", () => {
 
     expect(themes.dark?.["bg-page"]).toBe("#080e1b");
     expect(themes.light?.["bg-page"]).toBe("#fafbfe");
+  });
+
+  test("should give an Electron main process its scrim and shadow colour", () => {
+    const values = parsed.effectValues as Record<
+      string,
+      Record<string, { color: string; alpha: number }>
+    >;
+
+    expect(values.light?.scrim).toEqual({ color: "#091122", alpha: 0.48 });
+    expect(values.dark?.scrim).toEqual({ color: "#040813", alpha: 0.64 });
+    expect(values.light?.shadow).toEqual({ color: "#0f173c", alpha: 0.1 });
   });
 
   test("should be indented and end with a newline", () => {

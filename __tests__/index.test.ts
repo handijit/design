@@ -10,6 +10,7 @@ const EXPECTED_EXPORTS = [
   "cssVarName",
   "deltaE",
   "effects",
+  "effectValues",
   "fonts",
   "fontWeights",
   "hexToOklch",
@@ -61,6 +62,7 @@ describe("public entry point", () => {
     const data = [
       api.breakpoints,
       api.effects,
+      api.effectValues,
       api.fonts,
       api.fontWeights,
       api.hues,

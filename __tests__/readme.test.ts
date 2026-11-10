@@ -32,7 +32,7 @@ describe("README", () => {
       .map((name) => name.trim())
       .filter((name) => name !== "");
 
-    expect(types).toHaveLength(46);
+    expect(types).toHaveLength(50);
     expect(types.filter((name) => !readme.includes(`\`${name}\``))).toEqual([]);
   });
 
